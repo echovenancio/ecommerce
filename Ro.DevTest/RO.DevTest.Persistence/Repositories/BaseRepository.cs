@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RO.DevTest.Application.Contracts.Persistance.Repositories;
 using System.Linq.Expressions;
+using RO.DevTest.Application.Common;
 
 namespace RO.DevTest.Persistence.Repositories;
 
@@ -23,6 +24,28 @@ public class BaseRepository<T>(DefaultContext defaultContext) : IBaseRepository<
     public async void Delete(T entity) {
         Context.Set<T>().Remove(entity);
         await Context.SaveChangesAsync();
+    }
+
+    protected async Task<PagedResult<T>> GetPagedAsync(
+        Expression<Func<T, bool>> predicate,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default
+    ) {
+        IQueryable<T> baseQuery = GetWhereQuery(predicate);
+
+        if(orderBy is not null) {
+            baseQuery = orderBy(baseQuery);
+        }
+
+        int totalCount = await baseQuery.CountAsync(cancellationToken);
+        List<T> items = await baseQuery
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<T>(totalCount, pageSize, pageNumber, items);
     }
 
     public T? Get(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
