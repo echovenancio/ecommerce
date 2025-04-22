@@ -98,4 +98,10 @@ public interface IIdentityAbstractor {
     /// A <see cref="Task{IdentityResult}"/>
     /// </returns>
     Task<IdentityResult> DeleteUser(User user);
+
+    /// <summary>
+    /// Creates a token for a <see cref="User"/> asynchronously
+    /// </summary>
+    /// <param name="user">
+    Task<String> GenerateUserTokenAsync(User user);
 }
