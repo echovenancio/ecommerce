@@ -30,7 +30,7 @@ public class Sale : BaseEntity
     /// <summary>
     /// Id of the user who made the sale
     /// </summary>
-    public Guid UserId { get; set; }
+    public required string UserId { get; set; }
 
     /// <summary>
     /// The user who made the sale
