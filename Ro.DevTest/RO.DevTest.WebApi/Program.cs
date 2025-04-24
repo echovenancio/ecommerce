@@ -3,6 +3,7 @@ using RO.DevTest.Infrastructure.IoC;
 using RO.DevTest.Persistence.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using RO.DevTest.WebApi.Authorization;
 
 namespace RO.DevTest.WebApi;
 
@@ -54,7 +55,10 @@ public class Program
                 };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+            {
+                options.AddIdentityPolicies();
+            });
 
         var app = builder.Build();
 
