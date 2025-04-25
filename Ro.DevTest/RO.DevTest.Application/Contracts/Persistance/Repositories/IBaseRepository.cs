@@ -24,14 +24,14 @@ public interface IBaseRepository<T> where T : class {
     T? Get(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
     /// <summary>
-    /// Updates an entity entry on the database
+    /// Asynchronously updates an entity entry on the database
     /// </summary>
-    /// <param name="entity"> The entity to be added </param>
-    void Update(T entity);
+    /// <param name="entity"> The entity to be edited </param>
+    Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes one entry from the database
     /// </summary>
     /// <param name="entity"> The entity to be deleted </param>
-    void Delete(T entity);
+    Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
 }
