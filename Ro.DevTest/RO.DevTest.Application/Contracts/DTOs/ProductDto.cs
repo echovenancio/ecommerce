@@ -29,4 +29,14 @@ public class ProductDto
     /// Quantity of the product
     /// </summary>
     public int Quantity { get; set; }
+
+    /// <summary>
+    /// Date when the product was created
+    /// </summary>
+    public DateTime CreatedOn { get; set; }
+
+    /// <summary>
+    /// Date when the product was last updated
+    /// </summary>
+    public DateTime ModifiedOn { get; set; }
 }

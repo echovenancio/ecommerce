@@ -26,7 +26,7 @@ public class BaseRepository<T>(DefaultContext defaultContext) : IBaseRepository<
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    protected async Task<PagedResult<T>> GetPagedAsync(
+    public async Task<PagedResult<T>> GetPagedAsync(
         Expression<Func<T, bool>> predicate,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
         int pageNumber,
