@@ -55,6 +55,21 @@ public class IdentityAbstractor : IIdentityAbstractor
 
         return await _userManager.CreateAsync(partnerUser, password);
     }
+
+    public async Task<IdentityResult> UpdateUserAsync(User user)
+    {
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user), "User cannot be null");
+        }
+        if (string.IsNullOrEmpty(user.Email))
+        {
+            throw new ArgumentException($"{nameof(User.Email)} cannot be null or empty", nameof(user));
+        }
+
+        return await _userManager.UpdateAsync(user);
+    }
+
     public async Task<SignInResult> PasswordSignInAsync(User user, string password)
         => await _signInManager.PasswordSignInAsync(user, password, false, false);
 
