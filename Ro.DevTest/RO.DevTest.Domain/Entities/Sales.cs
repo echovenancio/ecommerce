@@ -15,7 +15,7 @@ public class Sale : BaseEntity
     /// <summary>
     /// The total price of the sale
     /// </summary>
-    public decimal Total => Quantity * Product.Price;
+    public decimal Total { get; set; }
 
     /// <summary>
     /// Id of the product sold 
