@@ -7,6 +7,7 @@ using RO.DevTest.Domain.Abstract;
 /// </summary>
 public class Product : BaseEntity
 {
+
     /// <summary>
     /// Name of the product
     /// </summary>
@@ -21,6 +22,11 @@ public class Product : BaseEntity
     /// Price of the product
     /// </summary>
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// Quantity of the product
+    /// </summary>
+    public int Quantity { get; set; }
 
     public Product() : base() { }
 }
