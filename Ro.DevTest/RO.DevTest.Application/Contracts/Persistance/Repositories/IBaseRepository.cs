@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using RO.DevTest.Application.Common;
 
 namespace RO.DevTest.Application.Contracts.Persistance.Repositories;
 
@@ -34,4 +35,15 @@ public interface IBaseRepository<T> where T : class {
     /// </summary>
     /// <param name="entity"> The entity to be deleted </param>
     Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Paged query 
+    /// </summary>
+    Task<PagedResult<T>> GetPagedAsync(
+        Expression<Func<T, bool>> predicate,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default
+    );
 }
