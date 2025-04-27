@@ -10,7 +10,7 @@ public class UserDto
     /// <summary>
     /// Unique identifier for the user
     /// </summary>
-    public Guid Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Name of the user
