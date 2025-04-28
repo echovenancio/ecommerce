@@ -39,13 +39,13 @@ public class CreateSaleCommandHandler(ISaleRepository saleRepository, IProductRe
 
         sale.User = user;
         sale.Product = product;
-        sale.Total = product.Price * sale.Quantity;
+        sale.Total = product.Price * (decimal)sale.Quantity;
 
         var result = await _saleRepository.CreateAsync(sale, cancellationToken);
 
         if (result == null)
             throw new BadRequestException("Venda não encontrada.");
 
-        return new CreateSaleResult(result);
+        return new CreateSaleResult(sale);
     }
 }

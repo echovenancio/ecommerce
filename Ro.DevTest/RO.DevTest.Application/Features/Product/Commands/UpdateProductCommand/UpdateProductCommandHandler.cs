@@ -37,7 +37,7 @@ public class UpdateProductCommandHandler(IProductRepository productRepository) :
         product.Quantity = requestProduct.Quantity;
         product.ModifiedOn = DateTime.UtcNow;
 
-        _productRepository.Update(product);
+        await _productRepository.UpdateAsync(product);
 
         return true; 
     }
