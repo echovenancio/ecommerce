@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RO.DevTest.Domain.Exception;
 
-// [TODO] Standardize requests
-// [TODO] Display a semantic error message to the client
 /// <summary>
 /// Returns a <see cref="HttpStatusCode.BadRequest"/> to
 /// the request

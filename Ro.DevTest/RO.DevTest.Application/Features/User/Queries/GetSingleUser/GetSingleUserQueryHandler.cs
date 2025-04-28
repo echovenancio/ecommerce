@@ -15,15 +15,15 @@ public class GetSingleUserQueryHandler(IIdentityAbstractor identityAbstractor) :
         var user = await _identityAbstractor.FindUserByIdAsync(request.Id);
         if (user == null)
         {
-            throw new BadRequestException("Usuário não encontrado.");
+            return null!;
         }
 
         return new UserDto
         {
             Id = user.Id,
             Name = user.Name,
-            UserName = user.UserName,
-            Email = user.Email
+            UserName = user.UserName!,
+            Email = user.Email!
         };
     }
 }

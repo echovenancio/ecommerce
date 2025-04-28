@@ -14,7 +14,7 @@ public class GetSingleSaleQueryHandler(ISaleRepository saleRepository) : IReques
         var sale = _saleRepository.Get(x => x.Id == request.Id);
 
         if (sale == null)
-            throw new BadRequestException("Venda não encontrada.");
+            return null!; 
 
         return new SaleDto
         {

@@ -3,15 +3,19 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using RO.DevTest.Application.DTOs;
+using RO.DevTest.Domain.Exception;
 using RO.DevTest.Application.Common;
 using RO.DevTest.Application.Features.Product.Commands.UpdateProductCommand;
 using RO.DevTest.Application.Features.Product.Commands.CreateProductCommand;
 using RO.DevTest.Application.Features.Product.Commands.DeleteProductCommand;
 using RO.DevTest.Application.Features.Product.Queries.GetSingleProductQuery;
 using RO.DevTest.Application.Features.Product.Queries.GetProductsQuery;
+using Microsoft.AspNetCore.Authorization;
+using RO.DevTest.WebApi.Authorization;
 
 namespace RO.DevTest.WebApi.Controllers;
 
+[Authorize(Policy = IdentityPolicies.AdminPolicy)]
 [Route("api/product")]
 [OpenApiTags("Products")]
 public class ProductController(IMediator mediator) : Controller
@@ -23,8 +27,14 @@ public class ProductController(IMediator mediator) : Controller
     [ProducesResponseType(typeof(CreateProductResult), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand request)
     {
-        CreateProductResult response = await _mediator.Send(request);
-        return Created(HttpContext.Request.GetDisplayUrl(), response);
+        try {
+            CreateProductResult response = await _mediator.Send(request);
+            return Created(HttpContext.Request.GetDisplayUrl(), response);
+        } catch (BadRequestException ex) {
+            return BadRequest(ex.Errors);
+        } catch (InternalServerErrorException ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpGet("{id}")]
@@ -32,13 +42,19 @@ public class ProductController(IMediator mediator) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProductById([FromRoute] Guid id)
     {
-        var query = new GetSingleProductQuery { Id = id };
-        var result = await _mediator.Send(query);
-        if (result == null)
-        {
-            return NotFound();
+        try {
+            var query = new GetSingleProductQuery { Id = id };
+            var result = await _mediator.Send(query);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        } catch (BadRequestException ex) {
+            return BadRequest(ex.Errors);
+        } catch (InternalServerErrorException ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-        return Ok(result);
     }
 
     [HttpGet]
@@ -46,8 +62,14 @@ public class ProductController(IMediator mediator) : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProducts([FromQuery] GetProductsQuery query)
     {
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        try {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        } catch (BadRequestException ex) {
+            return BadRequest(ex.Errors);
+        } catch (InternalServerErrorException ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
@@ -56,16 +78,22 @@ public class ProductController(IMediator mediator) : Controller
     [ProducesResponseType(typeof(bool), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductCommand command)
     {
-        if (id != command.Id)
-        {
-            return BadRequest("Id in the URL and body do not match.");
-        }
-        var result = await _mediator.Send(command);
-        if (!result)
-        {
-            return NotFound();
-        }
+        try {
+            if (id != command.Id)
+            {
+                return BadRequest("Id in the URL and body do not match.");
+            }
+            var result = await _mediator.Send(command);
+            if (!result)
+            {
+                return NotFound();
+            }
         return Ok(result);
+        } catch (BadRequestException ex) {
+            return BadRequest(ex.Errors);
+        } catch (InternalServerErrorException ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
@@ -74,12 +102,18 @@ public class ProductController(IMediator mediator) : Controller
     [ProducesResponseType(typeof(bool), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
-        var command = new DeleteProductCommand { Id = id };
-        var result = await _mediator.Send(command);
-        if (!result)
-        {
-            return NotFound();
+        try {
+            var command = new DeleteProductCommand { Id = id };
+            var result = await _mediator.Send(command);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        } catch (BadRequestException ex) {
+            return BadRequest(ex.Errors);
+        } catch (InternalServerErrorException ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-        return Ok(result);
     }
 }
