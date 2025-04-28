@@ -7,7 +7,7 @@ public class LoginCommandHandler(IIdentityAbstractor identityAbstractor) : IRequ
     private readonly IIdentityAbstractor _identityAbstractor = identityAbstractor;
 
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken) {
-        var user = await _identityAbstractor.FindUserByEmailAsync(request.Username);
+        var user = await _identityAbstractor.FindUserByEmailAsync(request.Email);
 
         if (user == null) {
             throw new Exception("User not found");

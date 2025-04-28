@@ -17,23 +17,18 @@ public class CreateUserCommandHandler(IIdentityAbstractor identityAbstractor) : 
         ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if(!validationResult.IsValid) {
-            // Log the errors
-            Console.WriteLine("Validation errors:");
-            foreach (var error in validationResult.Errors) {
-                Console.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-            }
             throw new BadRequestException(validationResult);
         }
 
         Domain.Entities.User newUser = request.AssignTo();
         IdentityResult userCreationResult = await _identityAbstractor.CreateUserAsync(newUser, request.Password);
+
         if(!userCreationResult.Succeeded) {
-            var errors = string.Join("; ", userCreationResult.Errors.Select(e => $"{e.Code}: {e.Description}"));
-            Console.WriteLine(errors);
             throw new BadRequestException(userCreationResult);
         }
 
         IdentityResult userRoleResult = await _identityAbstractor.AddToRoleAsync(newUser, request.Role);
+
         if(!userRoleResult.Succeeded) {
             throw new BadRequestException(userRoleResult);
         }

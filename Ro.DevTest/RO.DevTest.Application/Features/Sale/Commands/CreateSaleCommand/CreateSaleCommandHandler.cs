@@ -17,12 +17,6 @@ public class CreateSaleCommandHandler(ISaleRepository saleRepository, IProductRe
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            // Log the errors
-            Console.WriteLine("Validation errors:");
-            foreach (var error in validationResult.Errors)
-            {
-                Console.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-            }
             throw new BadRequestException(validationResult);
         }
 
@@ -43,8 +37,9 @@ public class CreateSaleCommandHandler(ISaleRepository saleRepository, IProductRe
 
         var result = await _saleRepository.CreateAsync(sale, cancellationToken);
 
-        if (result == null)
-            throw new BadRequestException("Venda não encontrada.");
+        if (result == null) {
+            throw new InternalServerErrorException("Erro criando compra.");
+        }
 
         return new CreateSaleResult(sale);
     }

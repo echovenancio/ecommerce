@@ -14,7 +14,7 @@ public class GetSingleProductQueryHandler(IProductRepository productRepository) 
         var product = _productRepository.Get(x => x.Id == request.Id);
 
         if (product == null)
-            throw new BadRequestException("Produto não encontrado.");
+            return null!;
 
         return new ProductDto{
             Id = product.Id,

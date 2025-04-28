@@ -17,18 +17,13 @@ public class UpdateUserCommandHandler(IIdentityAbstractor identityAbstractor) : 
         ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if(!validationResult.IsValid) {
-            // Log the errors
-            Console.WriteLine("Validation errors:");
-            foreach (var error in validationResult.Errors) {
-                Console.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-            }
             throw new BadRequestException(validationResult);
         }
 
         var user = await _identityAbstractor.FindUserByIdAsync(request.Id);
 
         if (user == null)
-            throw new BadRequestException("User not found.");
+            throw new BadRequestException("Usuário não foi encontrado.");
 
         Domain.Entities.User updatedUser = request.AssignTo();
 
@@ -37,7 +32,6 @@ public class UpdateUserCommandHandler(IIdentityAbstractor identityAbstractor) : 
         user.Name = updatedUser.Name;
 
         IdentityResult userCreationResult = await _identityAbstractor.UpdateUserAsync(user);
-
 
         if(!userCreationResult.Succeeded) {
             var errors = string.Join("; ", userCreationResult.Errors.Select(e => $"{e.Code}: {e.Description}"));

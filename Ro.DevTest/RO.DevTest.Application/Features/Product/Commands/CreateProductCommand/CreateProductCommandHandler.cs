@@ -15,12 +15,6 @@ public class CreateProductCommandHandler(IProductRepository productRepository) :
 
         if (!validationResult.IsValid)
         {
-            // Log the errors
-            Console.WriteLine("Validation errors:");
-            foreach (var error in validationResult.Errors)
-            {
-                Console.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-            }
             throw new BadRequestException(validationResult);
         }
 
@@ -29,7 +23,7 @@ public class CreateProductCommandHandler(IProductRepository productRepository) :
         var result = await _productRepository.CreateAsync(product, cancellationToken);
 
         if (result == null)
-            throw new BadRequestException("Produto não encontrado.");
+            throw new InternalServerErrorException("Erro criando o produto.");
 
         return new CreateProductResult(result);
     }

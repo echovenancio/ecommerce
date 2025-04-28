@@ -15,12 +15,6 @@ public class UpdateProductCommandHandler(IProductRepository productRepository) :
 
         if (!validationResult.IsValid)
         {
-            // Log the errors
-            Console.WriteLine("Validation errors:");
-            foreach (var error in validationResult.Errors)
-            {
-                Console.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-            }
             throw new BadRequestException(validationResult);
         }
 
