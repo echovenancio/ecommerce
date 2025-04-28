@@ -3,6 +3,7 @@ using RO.DevTest.Application.DTOs;
 using RO.DevTest.Application.Common;
 using RO.DevTest.Application.Contracts.Persistance.Repositories;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace RO.DevTest.Application.Features.Sale.Queries.GetSalesQuery;
 
@@ -14,6 +15,7 @@ public class GetSalesQueryHandler(ISaleRepository saleRepository) : IRequestHand
         Expression<Func<Domain.Entities.Sale, bool>> predicate = p =>
             (string.IsNullOrEmpty(request.CustomerName) || p.User.Name.Contains(request.CustomerName)) &&
             (string.IsNullOrEmpty(request.ProductName) || p.Product.Name.Contains(request.ProductName));
+
         var result = await _saleRepository.GetPagedAsync(
                 predicate,
                 q => request.SortBy!.ToLower() switch
@@ -23,7 +25,9 @@ public class GetSalesQueryHandler(ISaleRepository saleRepository) : IRequestHand
                     _ => q.OrderBy(x => x.CreatedOn)
                 },
                 request.PageNumber,
-                request.PageSize);
+                request.PageSize,
+                include: q => q.Include(x => x.User).Include(x => x.Product)
+                );
 
         return new PagedResult<SaleDto>(
             result.TotalCount,

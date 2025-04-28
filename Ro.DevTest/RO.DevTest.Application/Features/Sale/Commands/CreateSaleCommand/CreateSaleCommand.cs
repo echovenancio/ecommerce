@@ -23,6 +23,7 @@ public class CreateSaleCommand: IRequest<CreateSaleResult>
             ProductId = ProductId,
             User = new Domain.Entities.User(),
             Product = new Domain.Entities.Product(),
+            Quantity = Quantity,
         };
     }
 }

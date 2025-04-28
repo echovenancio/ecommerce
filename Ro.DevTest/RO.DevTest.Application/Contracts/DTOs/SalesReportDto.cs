@@ -11,11 +11,6 @@ public class SalesReportDto
     public Guid ProductId { get; set; }
 
     /// <summary>
-    /// Unique identifier for the user
-    /// /// </summary>
-    public string UserId { get; set; } = string.Empty;
-
-    /// <summary>
     /// Name of the product
     /// </summary>
     public string ProductName { get; set; } = string.Empty;

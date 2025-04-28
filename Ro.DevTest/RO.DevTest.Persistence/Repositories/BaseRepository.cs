@@ -31,9 +31,14 @@ public class BaseRepository<T>(DefaultContext defaultContext) : IBaseRepository<
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
         int pageNumber,
         int pageSize,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default
     ) {
         IQueryable<T> baseQuery = GetWhereQuery(predicate);
+
+        if (include is not null) {
+            baseQuery = include(baseQuery);
+        }
 
         if(orderBy is not null) {
             baseQuery = orderBy(baseQuery);

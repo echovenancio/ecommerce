@@ -44,6 +44,7 @@ public interface IBaseRepository<T> where T : class {
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
         int pageNumber,
         int pageSize,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default
     );
 }
